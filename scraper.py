@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin  # Import urljoin to handle relative URLs
-from pdf_handler import download_pdf
+from pdf_handler import download_pdf, analyze_all_pdfs
 
 def scrape_and_download_pdfs():
     url = "https://mydata.dallasisd.org/SL/SD/cdp.jsp"
@@ -19,4 +19,5 @@ def scrape_and_download_pdfs():
         download_pdf(link)  # Download each PDF
 
     print("All PDFs downloaded. Now processing them...")
+    analyze_all_pdfs()
     return pdf_links  # Return the list of PDF links for further processing
