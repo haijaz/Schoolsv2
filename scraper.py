@@ -2,11 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin  # Import urljoin to handle relative URLs
 from pdf_handler import download_pdf, analyze_all_pdfs
+import os
 
 def scrape_and_download_pdfs():
     url = "https://mydata.dallasisd.org/SL/SD/cdp.jsp"
     print(f"Scraping URL: {url}")
     response = requests.get(url)
+    print(f"Response code: {response.status_code}") # Check if request was successful
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Get absolute URLs for PDF links
@@ -15,8 +17,12 @@ def scrape_and_download_pdfs():
 
     # Download all PDFs first
     for link in pdf_links:
-        print(f"Downloading PDF: {link}")
-        download_pdf(link)  # Download each PDF
+        pdf_name = os.path.join("downloads", link.split('/')[-1])
+        if not os.path.exists(pdf_name):
+            print(f"Downloading PDF: {link}")
+            download_pdf(link)  # Download each PDF
+        else:
+            print(f"PDF already exists: {pdf_name}. Skipping download.")
 
     print("All PDFs downloaded. Now processing them...")
     analyze_all_pdfs()

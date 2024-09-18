@@ -7,8 +7,10 @@ DOWNLOAD_DIR = 'downloads/'
 
 
 def download_pdf(url):
+    print(f"Starting download process for PDF at URL: {url}")
     if not os.path.exists(DOWNLOAD_DIR):
         os.makedirs(DOWNLOAD_DIR)
+        print(f"Created directory: {DOWNLOAD_DIR}")
 
     pdf_name = os.path.join(DOWNLOAD_DIR, url.split('/')[-1])
 
@@ -16,9 +18,12 @@ def download_pdf(url):
         print(f"Downloading PDF: {pdf_name} from {url}")  # Show URL being downloaded
         response = requests.get(url)
         print(f"Download status code: {response.status_code}")  # Check for successful download
-        with open(pdf_name, 'wb') as f:
-            f.write(response.content)
-        print(f"Download complete: {pdf_name}")  # Confirm download
+        if response.status_code == 200:
+            with open(pdf_name, 'wb') as f:
+                f.write(response.content)
+            print(f"Download complete: {pdf_name}")  # Confirm download
+        else:
+            print(f"Error downloading PDF: {url}. Status code: {response.status_code}")
     else:
         print(f"PDF already exists: {pdf_name}")
 
