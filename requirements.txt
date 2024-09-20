@@ -3,3 +3,5 @@ requests
 beautifulsoup4
 PyPDF2
 SQLAlchemy
+camelot.io
+camelot-py

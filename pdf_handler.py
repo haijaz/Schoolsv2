@@ -41,6 +41,8 @@ def analyze_all_pdfs():
 
 def analyze_pdf(pdf_path):
     print(f"Analyzing PDF: {pdf_path}")
+    print(" starting text extration")
+    listofschools = []
     try:
         with open(pdf_path, 'rb') as f:
             reader = PdfReader(f)
@@ -48,9 +50,10 @@ def analyze_pdf(pdf_path):
             text = ''
             for page_num, page in enumerate(reader.pages):  # Get page number
                 text += page.extract_text() or ''
-                print(f"  Extracted text from page {page_num + 1} of {total_pages}")  # Show page progress
+          #      print(f"  Extracted text from page {page_num + 1} of {total_pages}")  # Show page progress
 
             if 'high school' in text.lower():  # Check if it's a high school report
+                listofschools.append(pdf_path)
                 print("  High school report found.")
                 extracted_data = extract_performance_data(text)
                 if extracted_data:
@@ -62,6 +65,7 @@ def analyze_pdf(pdf_path):
                 print("  Not a high school report.")
     except Exception as e:
         print(f"  Error analyzing PDF: {e}")
+    print (listofschools)
 
 
 def extract_performance_data(text):
@@ -84,12 +88,20 @@ def extract_performance_data(text):
                                                           "U.S. History"],
                                                          ["Approaches Grade Level", "Meets Grade Level",
                                                           "Masters Grade Level"])
+    print(f"      Algebra I: {performance_data['staar_eoc']['algebra_i']}")
+    print(f"      Biology: {performance_data['staar_eoc']['biology']}")
+    print(f"      English I: {performance_data['staar_eoc']['english_i']}")
+    print(f"      English II: {performance_data['staar_eoc']['english_ii']}")
 
     # --- TELPAS Results ---
     print("    Looking for TELPAS results...")
     performance_data['telpas'] = extract_section_data(text, "TELPAS Results",
                                                       ["Listening", "Speaking", "Reading", "Writing"],
                                                       ["Beginning", "Intermediate", "Advanced", "Advanced High"])
+    print(f"      Listening: {performance_data['telpas']['listening']}")
+    print(f"      Speaking: {performance_data['telpas']['speaking']}")
+    print(f"      Reading: {performance_data['telpas']['reading']}")
+    print(f"      Writing: {performance_data['telpas']['writing']}")
 
     # --- Assessments of Course Performance ---
     print("    Looking for Assessments of Course Performance results...")
@@ -102,6 +114,8 @@ def extract_performance_data(text):
     # Example (adjust keywords based on your PDF format)
     performance_data['student_enrollment'] = extract_value(text, "Total Student Enrollment:", "")
     performance_data['economically_disadvantaged'] = extract_percentage(text, "Economically Disadvantaged:")
+    print(f"      Student Enrollment: {performance_data['student_enrollment']}")
+    print(f"      Economically Disadvantaged: {performance_data['economically_disadvantaged']}")
     # ... extract other demographic data points ...
 
     # --- Student Progression and Averages ---
@@ -109,6 +123,8 @@ def extract_performance_data(text):
     # Example (adjust keywords based on your PDF format)
     performance_data['attendance_rate'] = extract_percentage(text, "Average Daily Attendance:")
     performance_data['graduation_rate'] = extract_percentage(text, "Four-Year Graduation Rate:")
+    print(f"      Attendance Rate: {performance_data['attendance_rate']}")
+    print(f"      Graduation Rate: {performance_data['graduation_rate']}")
     # ... extract other progression and average data points ...
 
     # --- District-Level Comparisons ---
@@ -116,6 +132,8 @@ def extract_performance_data(text):
     # Example (adjust keywords based on your PDF format)
     performance_data['district_reading_avg'] = extract_value(text, "District Average - Reading:", "")
     performance_data['district_math_avg'] = extract_value(text, "District Average - Math:", "")
+    print(f"      District Reading Average: {performance_data['district_reading_avg']}")
+    print(f"      District Math Average: {performance_data['district_math_avg']}")
     # ... extract other district comparison data points ...
 
     return performance_data
